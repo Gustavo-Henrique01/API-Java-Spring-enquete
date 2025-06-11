@@ -6,44 +6,60 @@ import java.util.Objects;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import enquetes.sistemaenquetes.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "users")
 public class User {
+	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id ;
+	private Long id ;
 	@Column(nullable = false, unique = true)
-	String username ; 
+	private String username ; 
 	@Column(nullable = false)
-	String password ;
-	@Column(nullable = false)
-	String role ; 
-	@Column(nullable = false)
-	@CreationTimestamp
-	LocalDateTime createdAt ; 
-	@UpdateTimestamp
-	LocalDateTime updatedAt ;
+	private String password ;
+	
+	@Enumerated(EnumType.STRING) 
+    @Column(nullable = false)
+	private UserRole role ; 
+	
+	 @CreationTimestamp
+	 @Column(nullable = false, updatable = false)
+	 private LocalDateTime createdAt ; 
+	 @UpdateTimestamp
+	 @Column(nullable = false)
+	 private LocalDateTime updatedAt ;
 	
 	public User () {
 		
 	}
 	
-	public User(Long id, String username, String password, String role, LocalDateTime createdAt,
-			LocalDateTime updatedAt) {
-		super();
-		this.id = id;
+	public User( String username, String password,UserRole role) {
+		
 		this.username = username;
 		this.password = password;
 		this.role = role;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
 	}
+	
+	
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -62,12 +78,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
+	
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -80,34 +91,27 @@ public class User {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
 	@Override
-	public int hashCode() {
-		return Objects.hash(createdAt, id, password, role, updatedAt, username);
-	}
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return Objects.equals(createdAt, other.createdAt) && Objects.equals(id, other.id)
-				&& Objects.equals(password, other.password) && Objects.equals(role, other.role)
-				&& Objects.equals(updatedAt, other.updatedAt) && Objects.equals(username, other.username);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", getId()=" + getId() + ", getUsername()="
-				+ getUsername() + ", getPassword()=" + getPassword() + ", getRole()=" + getRole() + ", getCreatedAt()="
-				+ getCreatedAt() + ", getUpdatedAt()=" + getUpdatedAt() + ", hashCode()=" + hashCode() + ", getClass()="
-				+ getClass() + ", toString()=" + super.toString() + "]";
-	} 
+    @Override
+    public String toString() {
+        return "User{" +
+               "id=" + id +
+               ", username='" + username + '\'' +
+               ", role=" + role + 
+               '}';
+    }
 	
 	
 	
