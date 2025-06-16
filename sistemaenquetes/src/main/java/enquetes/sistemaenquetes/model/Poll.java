@@ -181,7 +181,7 @@ public class Poll {
 	    public void removeOption(Option option) {
 	        if (this.options.contains(option)) {
 	            this.options.remove(option);
-	            option.setPoll(null); // Remove a relação bidirecional
+	            option.setPoll(null); 
 	        }
 	    }
 
