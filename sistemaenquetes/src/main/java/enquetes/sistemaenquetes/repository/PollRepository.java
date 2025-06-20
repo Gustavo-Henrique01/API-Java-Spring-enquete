@@ -17,4 +17,10 @@ public interface PollRepository extends JpaRepository<Poll,Long>{
         PollStatus status, LocalDateTime now1, LocalDateTime now2);
     // Encontrar enquetes ativas ou fechadas por criador
     List<Poll> findByCreatedBy_IdAndStatusIn(Long userId, List<PollStatus> statuses);
+    
+    List<Poll> findByStatus(PollStatus status);
+    
+    
+    
+    
 }
