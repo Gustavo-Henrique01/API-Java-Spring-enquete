@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -57,6 +58,14 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(UsernameAlreadyExistsException.class)
 	public Map<String, String> UsernameAlreadyExistsException (UsernameAlreadyExistsException  ex){
+		Map<String, String> errosMap = new HashMap<String, String>();
+		errosMap.put("mensagem", ex.getMessage());
+		return errosMap;
+	}
+	
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public Map<String, String> UsernameNotFoundException (UsernameNotFoundException  ex){
 		Map<String, String> errosMap = new HashMap<String, String>();
 		errosMap.put("mensagem", ex.getMessage());
 		return errosMap;
