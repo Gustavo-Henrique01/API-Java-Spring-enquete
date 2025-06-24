@@ -42,6 +42,9 @@ public class Vote {
 	    private Poll poll; 
 	
 	
+	 public Vote () {
+		 
+	 }
 	
 	public Vote(User user, Option option , Poll poll) {
 		super();

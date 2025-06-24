@@ -1,11 +1,11 @@
 package enquetes.sistemaenquetes.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 
+import enquetes.sistemaenquetes.config.JwtService;
 import enquetes.sistemaenquetes.dto.LoginResponseDTO;
 import enquetes.sistemaenquetes.dto.UserLoginDTO;
 import enquetes.sistemaenquetes.dto.UserRegistrationDTO;
@@ -52,11 +52,11 @@ public class AuthService {
 	    	            encryptedPassword,
 	    	            role
 	    	        );
-	    	 userRepository.save(newUser);
+	     return	 userRepository.save(newUser);
 	    	 
 	    }
 	    @Transactional(readOnly = true)
-	    public loginResponseDTO (UserLoginDTO userLoginDTO) {
+	    public LoginResponseDTO loginResponseDTO (UserLoginDTO userLoginDTO) {
 	    	
 	    	//  Autentica o usuário usando o Spring Security AuthenticationManager
 	        // Isso vai verificar as credenciais e, se corretas, criar um objeto Authentication
