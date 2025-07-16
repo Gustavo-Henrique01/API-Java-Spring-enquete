@@ -1,5 +1,7 @@
 package enquetes.sistemaenquetes.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,12 +42,21 @@ public class PollController {
         
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPoll);
 	}
+	 @GetMapping 
+	    @PreAuthorize("isAuthenticated()") 
+	    public ResponseEntity<List<PollResponseDTO>> getAllPolls( 
+	            @RequestParam(required = false) PollStatus status) { 
+	        
+	        List<PollResponseDTO> polls = pollService.getAllPolls(status);
+	        return ResponseEntity.ok(polls);
+	    }
 	@GetMapping("/{id}")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<PollResponseDTO> getPollById ( @PathVariable Long id){
 	PollResponseDTO pollResponseDTO = pollService.getPollById(id);
 	return ResponseEntity.ok(pollResponseDTO);
 	}
+	
 	
 	@PutMapping("{id}/status")
 	@PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
