@@ -20,7 +20,7 @@ public class PollRequestDTO {
     private LocalDateTime startDate;
 
     @NotNull(message = "A data de término é obrigatória.")
-    @FutureOrPresent(message = "A data de término não pode ser no passado.")
+    @FutureOrPresent(message = "A data de término não pode ser no inicio.")
     private LocalDateTime endDate;
 
     @NotNull(message = "As opções de voto são obrigatórias.")

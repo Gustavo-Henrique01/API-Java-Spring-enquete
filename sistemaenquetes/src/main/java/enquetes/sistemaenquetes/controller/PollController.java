@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import enquetes.sistemaenquetes.dto.PollRequestDTO;
 import enquetes.sistemaenquetes.dto.PollResponseDTO;
+import enquetes.sistemaenquetes.dto.PollUpdateRequestDTO;
 import enquetes.sistemaenquetes.enums.PollStatus;
 import enquetes.sistemaenquetes.model.User;
 import enquetes.sistemaenquetes.service.PollService;
@@ -49,10 +50,10 @@ public class PollController {
 	        
 	        List<PollResponseDTO> polls = pollService.getAllPolls(status);
 	        return ResponseEntity.ok(polls);
-	    }
+ }
 	@GetMapping("/{id}")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<PollResponseDTO> getPollById ( @PathVariable Long id){
+	public ResponseEntity<PollResponseDTO> getPollyId( @PathVariable Long id){
 	PollResponseDTO pollResponseDTO = pollService.getPollById(id);
 	return ResponseEntity.ok(pollResponseDTO);
 	}
@@ -75,6 +76,16 @@ public class PollController {
         Long creatorUserId = authenticatedUser.getId();	
         pollService.deletePoll(id, creatorUserId);
         return ResponseEntity.noContent().build();
+	}
+	
+	@PatchMapping("{id}/atulizar-enquete")
+	@PreAuthorize("hasAnyRole('CREATOR','ADMIN')")
+	public ResponseEntity<PollResponseDTO> updatePoll (@PathVariable Long id,  @RequestBody @Valid PollUpdateRequestDTO polls  ){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User authenticatedUser = (User) authentication.getPrincipal();
+        Long creatorUserId = authenticatedUser.getId();	
+        PollResponseDTO updatedPoll = pollService.updatePoll(id, polls, creatorUserId);
+		return ResponseEntity.ok(updatedPoll) ;
 	}
 	
 }

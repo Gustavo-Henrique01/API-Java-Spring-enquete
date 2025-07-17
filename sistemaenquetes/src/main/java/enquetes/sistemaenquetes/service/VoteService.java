@@ -65,7 +65,7 @@ public class VoteService {
 		
 		LocalDateTime now = LocalDateTime.now();
 		
-		if(poll.getStatus() != PollStatus.ACTIVE || now.isBefore(poll.getStartDate())) {
+		if(poll.getStatus() != PollStatus.ACTIVE || now.isBefore(poll.getStartDate()) ) {
 			throw new PollNotActiveException("Está enqute não está ativa para votação"); 
 			
 		}

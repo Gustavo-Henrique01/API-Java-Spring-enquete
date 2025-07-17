@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import enquetes.sistemaenquetes.dto.OptionResponseDTO;
 import enquetes.sistemaenquetes.dto.PollRequestDTO;
 import enquetes.sistemaenquetes.dto.PollResponseDTO;
+import enquetes.sistemaenquetes.dto.PollUpdateRequestDTO;
 import enquetes.sistemaenquetes.enums.PollStatus;
 import enquetes.sistemaenquetes.enums.UserRole;
 import enquetes.sistemaenquetes.exception.InvalidPollDateException;
 import enquetes.sistemaenquetes.exception.ResourceNotFoundException;
+import enquetes.sistemaenquetes.exception.UnauthorizedActionException;
 import enquetes.sistemaenquetes.model.Option;
 import enquetes.sistemaenquetes.model.Poll;
 import enquetes.sistemaenquetes.model.User;
@@ -190,9 +192,57 @@ public class PollService {
 		        
 		        pollRepository.delete(poll);
 		  }
-		  
+		  @Transactional
+		    public PollResponseDTO updatePoll(Long pollId, PollUpdateRequestDTO pollUpdateDTO, Long updaterUserId) {
+
+		        Poll existingPoll = pollRepository.findById(pollId)
+		                .orElseThrow(() -> new ResourceNotFoundException("Enquete não encontrada com ID: " + pollId));
+
+		        User updater = userService.getUserEntityById(updaterUserId);
+
+		        if (!existingPoll.getCreatedBy().equals(updater) && !updater.getRole().equals(UserRole.ROLE_ADMIN)) {
+		            throw new UnauthorizedActionException("Você não tem permissão para atualizar esta enquete.");
+		        }
+
+		        if (pollUpdateDTO.getQuestion() != null && !pollUpdateDTO.getQuestion().isBlank()) {
+		            existingPoll.setQuestion(pollUpdateDTO.getQuestion());
+		        }
+		        if (pollUpdateDTO.getDescription() != null && !pollUpdateDTO.getDescription().isBlank()) {
+		            existingPoll.setDescription(pollUpdateDTO.getDescription());
+		        }
+		        if (pollUpdateDTO.getStartDate() != null) {
+		            existingPoll.setStartDate(pollUpdateDTO.getStartDate());
+		        }
+		        if (pollUpdateDTO.getEndDate() != null) {
+		            existingPoll.setEndDate(pollUpdateDTO.getEndDate());
+		        }
+
+		        
+		        if (existingPoll.getStartDate().isAfter(existingPoll.getEndDate())) {
+		            throw new InvalidPollDateException("A data de início da enquete não pode ser posterior à data de término após a atualização.");
+		        }
+
+		        Poll updatedPollEntity = pollRepository.save(existingPoll);
+
+		      
+		        List<OptionResponseDTO> optionDTOs = updatedPollEntity.getOptions().stream()
+		                .map(option -> {
+		                    long voteCount = voteRepository.countByOptionId(option.getId()); 
+		                    return new OptionResponseDTO(option.getId(), option.getText(), voteCount); 
+		                })
+		                .collect(Collectors.toList());
+
+		        return new PollResponseDTO(
+		            updatedPollEntity.getId(),
+		            updatedPollEntity.getQuestion(),
+		            updatedPollEntity.getDescription(),
+		            updatedPollEntity.getStartDate(),
+		            updatedPollEntity.getEndDate(),
+		            updatedPollEntity.getStatus(), 
+		            updatedPollEntity.getCreatedBy().getUsername(),
+		            optionDTOs
+		        );
+		    }
 		
 		
-	    
-	    
 }

@@ -14,8 +14,9 @@ import enquetes.sistemaenquetes.model.User;
 import enquetes.sistemaenquetes.service.AuthService;
 import jakarta.validation.Valid;
 
-@RestController // Indica que esta classe é um controlador REST
-@RequestMapping("/api/v1/auth") // Define o caminho base para todos os endpoints neste controlador
+
+@RestController 
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 	
 	private final AuthService authService ;

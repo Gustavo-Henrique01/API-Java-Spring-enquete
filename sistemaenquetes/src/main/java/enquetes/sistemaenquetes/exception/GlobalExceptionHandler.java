@@ -56,6 +56,12 @@ public class GlobalExceptionHandler {
         errorsMap.put("message", ex.getMessage());
         return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST); 
     }
+    @ExceptionHandler(UnauthorizedActionException.class)
+    public ResponseEntity<Map<String, String>> handlePollNotActiveException(UnauthorizedActionException ex) {
+        Map<String, String> errorsMap = new HashMap<>();
+        errorsMap.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorsMap, HttpStatus.NOT_FOUND); 
+    }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
