@@ -64,8 +64,8 @@ public class PollService {
 	        );
 
 	        // 4. Adiciona as opções à enquete
-	        for (String optionText : pollDTO.getOptions()) {
-	            newPoll.addOption(new Option(optionText, newPoll)); // Passa newPoll para a bidirecionalidade
+	        for (String optionText : pollDTO.getOptions()) { 
+	            newPoll.addOption(new Option(optionText, newPoll));
 	        }
 
 	        // 5. Salva a enquete e suas opções (graças ao CascadeType.ALL)

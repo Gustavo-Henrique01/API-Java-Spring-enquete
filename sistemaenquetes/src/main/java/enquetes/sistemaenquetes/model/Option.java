@@ -64,23 +64,25 @@ public class Option {
 	
 	
 
-    
-    @Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+	 @Override
+	    public boolean equals(Object o) {
+	        if (this == o) return true;
+	        if (o == null || getClass() != o.getClass()) return false;
+	        Option other = (Option) o;
+	        if (id != null && other.id != null) {
+	            return Objects.equals(id, other.id);
+	        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Option other = (Option) obj;
-		return Objects.equals(id, other.id);
-	}
+	        return Objects.equals(text, other.text) && Objects.equals(poll, other.poll);
+	    }
+
+	    @Override
+	    public int hashCode() {
+	        if (id == null) {
+	            return Objects.hash(text, poll);
+	        }
+	        return Objects.hash(id);
+	    }
 
 	@Override
     public String toString() {
