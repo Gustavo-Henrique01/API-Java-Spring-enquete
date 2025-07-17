@@ -23,6 +23,7 @@ public class Option {
 	
 	@ManyToOne
 	@JoinColumn(name="poll_id" , nullable =false)
+	
 	private Poll poll ;
 	
 	

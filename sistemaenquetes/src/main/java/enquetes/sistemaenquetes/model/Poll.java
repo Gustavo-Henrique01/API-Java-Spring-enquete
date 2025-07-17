@@ -1,27 +1,13 @@
 package enquetes.sistemaenquetes.model;
 
+import enquetes.sistemaenquetes.enums.PollStatus; 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import enquetes.sistemaenquetes.enums.PollStatus;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
 @Entity
 @Table(name = "polls")
 public class Poll {
@@ -65,30 +51,36 @@ public class Poll {
 			
 		}
 
-		public Poll( String question, String description, LocalDateTime startDate, LocalDateTime endDate,
-				PollStatus status, User createdBy, List<Option> options) {
-			super();
-			
-			this.question = question;
-			this.description = description;
-			this.startDate = startDate;
-			this.endDate = endDate;
-			this.status = status;
-			this.createdBy = createdBy;
-			if (options != null) { 
-	            this.options.addAll(options);
-	            options.forEach(option -> option.setPoll(this));
-	        }
-		}
-		 public Poll(String question, String description, LocalDateTime startDate, LocalDateTime endDate,
-		            PollStatus status, User createdBy) {
-		        this.question = question;
-		        this.description = description;
-		        this.startDate = startDate;
-		        this.endDate = endDate;
-		        this.status = status;
-		        this.createdBy = createdBy;
+		public Poll(String question, String description, LocalDateTime startDate, LocalDateTime endDate,
+		            PollStatus status, User createdBy, List<Option> options) {
+		    this(); 
+		    
+		    this.question = question;
+		    this.description = description;
+		    this.startDate = startDate;
+		    this.endDate = endDate;
+		    this.status = status;
+		    this.createdBy = createdBy;
+		    
+		    if (options != null) { 
+		        for (Option option : options) {
+		            this.addOption(option); 
+		        }
 		    }
+		}
+		
+		
+
+		public Poll(String question, String description, LocalDateTime startDate, LocalDateTime endDate,
+		            PollStatus status, User createdBy) {
+		    this(); 
+		    this.question = question;
+		    this.description = description;
+		    this.startDate = startDate;
+		    this.endDate = endDate;
+		    this.status = status;
+		    this.createdBy = createdBy;
+		}
 		public Long getId() {
 			return id;
 		}
@@ -149,9 +141,7 @@ public class Poll {
 			return options;
 		}
 
-		public void setOptions(List<Option> options) {
-			this.options = options;
-		}
+	
 
 		public LocalDateTime getCreatedAt() {
 			return createdAt;
@@ -171,19 +161,26 @@ public class Poll {
 
 	    
 		
-	    public void addOption(Option option) {
-	        if (!this.options.contains(option)) { // Evita duplicatas
-	            this.options.add(option);
-	            option.setPoll(this); // Garante a relação bidirecional
-	        }
-	    }
+		 public void setOptions(List<Option> options) {
+		     
+		        this.options.clear();
+		        if (options != null) {
+		            options.forEach(this::addOption); 		        }
+		    }
 
-	    public void removeOption(Option option) {
-	        if (this.options.contains(option)) {
-	            this.options.remove(option);
-	            option.setPoll(null); 
-	        }
-	    }
+		    public void addOption(Option option) {
+		        if (!this.options.contains(option)) { 
+		            this.options.add(option);
+		            option.setPoll(this);
+		        }
+		    }
+
+		    public void removeOption(Option option) {
+		        if (this.options.contains(option)) {
+		            this.options.remove(option);
+		            option.setPoll(null); 
+		        }
+		    }
 
 		@Override
 		public int hashCode() {
